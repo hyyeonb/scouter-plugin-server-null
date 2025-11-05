@@ -75,62 +75,9 @@ public class NullPlugin {
         }
     }
 
-    // Additional Pack types handlers
-    public void mapPack(MapPack pack){
-        if(conf.getBoolean("ext_plugin_null_map_enabled", false)) {
-            println("[NullPlugin-map] " + pack);
-            printPackDetails("MapPack", pack);
-        }
-    }
-
-    public void batchPack(BatchPack pack){
-        if(conf.getBoolean("ext_plugin_null_batch_enabled", false)) {
-            println("[NullPlugin-batch] " + pack);
-            printPackDetails("BatchPack", pack);
-        }
-    }
-
-    public void droppedXLogPack(DroppedXLogPack pack){
-        if(conf.getBoolean("ext_plugin_null_dropped_xlog_enabled", false)) {
-            println("[NullPlugin-dropped-xlog] " + pack);
-            printPackDetails("DroppedXLogPack", pack);
-        }
-    }
-
-    public void interactionPerfCounter(InteractionPerfCounterPack pack){
-        if(conf.getBoolean("ext_plugin_null_interaction_counter_enabled", false)) {
-            println("[NullPlugin-interaction-counter] " + pack);
-            printPackDetails("InteractionPerfCounterPack", pack);
-        }
-    }
-
-    public void spanContainer(SpanContainerPack pack){
-        if(conf.getBoolean("ext_plugin_null_span_container_enabled", false)) {
-            println("[NullPlugin-span-container] " + pack);
-            printPackDetails("SpanContainerPack", pack);
-        }
-    }
-
-    public void span(SpanPack pack){
-        if(conf.getBoolean("ext_plugin_null_span_enabled", false)) {
-            println("[NullPlugin-span] " + pack);
-            printPackDetails("SpanPack", pack);
-        }
-    }
-
-    public void stack(StackPack pack){
-        if(conf.getBoolean("ext_plugin_null_stack_enabled", false)) {
-            println("[NullPlugin-stack] " + pack);
-            printPackDetails("StackPack", pack);
-        }
-    }
-
-    public void status(StatusPack pack){
-        if(conf.getBoolean("ext_plugin_null_status_enabled", false)) {
-            println("[NullPlugin-status] " + pack);
-            printPackDetails("StatusPack", pack);
-        }
-    }
+    // Note: Additional Pack types like DroppedXLogPack, InteractionPerfCounterPack,
+    // SpanContainerPack, SpanPack, StackPack, StatusPack are available in newer versions
+    // For Scouter 1.8.3, we focus on the main Pack types above
 
     /**
      * Parse profile steps from XLogProfilePack
@@ -176,82 +123,79 @@ public class NullPlugin {
         String stepInfo = "    [" + index + "] " + step.getClass().getSimpleName() + " (type=" + step.getStepType() + ")";
 
         // Print specific details based on step type
+        // Using getter methods to access fields (some fields may be private)
         if(step instanceof MethodStep) {
             MethodStep ms = (MethodStep) step;
-            String methodName = TextService.getMethodName(ms.hash);
-            stepInfo += " hash=" + ms.hash + " method=" + methodName + " elapsed=" + ms.elapsed + " cputime=" + ms.cputime;
+            String methodName = TextService.getMethodName(ms.getHash());
+            stepInfo += " hash=" + ms.getHash() + " method=" + methodName + " elapsed=" + ms.getElapsed() + " cputime=" + ms.getCputime();
         } else if(step instanceof MethodStep2) {
             MethodStep2 ms = (MethodStep2) step;
-            String methodName = TextService.getMethodName(ms.hash);
-            stepInfo += " hash=" + ms.hash + " method=" + methodName + " elapsed=" + ms.elapsed;
+            String methodName = TextService.getMethodName(ms.getHash());
+            stepInfo += " hash=" + ms.getHash() + " method=" + methodName + " elapsed=" + ms.getElapsed();
         } else if(step instanceof SqlStep) {
             SqlStep ss = (SqlStep) step;
-            String sql = TextService.getSql(ss.hash);
-            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed + " error=" + ss.error;
+            String sql = TextService.getSql(ss.getHash());
+            stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed() + " error=" + ss.getError();
         } else if(step instanceof SqlStep2) {
             SqlStep2 ss = (SqlStep2) step;
-            String sql = TextService.getSql(ss.hash);
-            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed + " error=" + ss.error;
+            String sql = TextService.getSql(ss.getHash());
+            stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed() + " error=" + ss.getError();
         } else if(step instanceof SqlStep3) {
             SqlStep3 ss = (SqlStep3) step;
-            String sql = TextService.getSql(ss.hash);
-            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed;
+            String sql = TextService.getSql(ss.getHash());
+            stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed();
         } else if(step instanceof MessageStep) {
             MessageStep ms = (MessageStep) step;
-            String message = TextService.getHashMessage(ms.hash);
-            stepInfo += " hash=" + ms.hash + " message=" + message + " time=" + ms.time + " value=" + ms.value;
+            String message = TextService.getHashMessage(ms.getHash());
+            stepInfo += " hash=" + ms.getHash() + " message=" + message + " time=" + ms.getTime() + " value=" + ms.getValue();
         } else if(step instanceof HashedMessageStep) {
             HashedMessageStep hms = (HashedMessageStep) step;
-            String message = TextService.getHashMessage(hms.hash);
-            stepInfo += " hash=" + hms.hash + " message=" + message + " time=" + hms.time + " value=" + hms.value;
+            String message = TextService.getHashMessage(hms.getHash());
+            stepInfo += " hash=" + hms.getHash() + " message=" + message + " time=" + hms.getTime() + " value=" + hms.getValue();
         } else if(step instanceof ParameterizedMessageStep) {
             ParameterizedMessageStep pms = (ParameterizedMessageStep) step;
-            stepInfo += " hash=" + pms.hash + " time=" + pms.time;
+            stepInfo += " hash=" + pms.getHash() + " time=" + pms.getTime();
         } else if(step instanceof ApiCallStep) {
             ApiCallStep acs = (ApiCallStep) step;
-            String apiCall = TextService.getApiCallName(acs.hash);
-            stepInfo += " hash=" + acs.hash + " api=" + apiCall + " elapsed=" + acs.elapsed + " error=" + acs.error;
+            String apiCall = TextService.getApiCallName(acs.getHash());
+            stepInfo += " hash=" + acs.getHash() + " api=" + apiCall + " elapsed=" + acs.getElapsed() + " error=" + acs.getError();
         } else if(step instanceof ApiCallStep2) {
             ApiCallStep2 acs = (ApiCallStep2) step;
-            String apiCall = TextService.getApiCallName(acs.hash);
-            stepInfo += " hash=" + acs.hash + " api=" + apiCall + " elapsed=" + acs.elapsed;
+            String apiCall = TextService.getApiCallName(acs.getHash());
+            stepInfo += " hash=" + acs.getHash() + " api=" + apiCall + " elapsed=" + acs.getElapsed();
         } else if(step instanceof SocketStep) {
             SocketStep ss = (SocketStep) step;
-            stepInfo += " ipaddr=" + ss.ipaddr + " port=" + ss.port + " elapsed=" + ss.elapsed;
-        } else if(step instanceof SpanStep) {
-            SpanStep ss = (SpanStep) step;
-            stepInfo += " hash=" + ss.hash + " elapsed=" + ss.elapsed;
-        } else if(step instanceof SpanCallStep) {
-            SpanCallStep scs = (SpanCallStep) step;
-            stepInfo += " hash=" + scs.hash + " elapsed=" + scs.elapsed;
+            stepInfo += " ipaddr=" + ss.getIpaddr() + " port=" + ss.getPort() + " elapsed=" + ss.getElapsed();
         } else if(step instanceof ThreadSubmitStep) {
             ThreadSubmitStep tss = (ThreadSubmitStep) step;
-            stepInfo += " hash=" + tss.hash + " elapsed=" + tss.elapsed;
+            stepInfo += " hash=" + tss.getHash() + " elapsed=" + tss.getElapsed();
         } else if(step instanceof ThreadCallPossibleStep) {
             ThreadCallPossibleStep tcps = (ThreadCallPossibleStep) step;
-            stepInfo += " hash=" + tcps.hash + " elapsed=" + tcps.elapsed;
+            stepInfo += " hash=" + tcps.getHash() + " elapsed=" + tcps.getElapsed();
         } else if(step instanceof DispatchStep) {
             DispatchStep ds = (DispatchStep) step;
-            stepInfo += " hash=" + ds.hash + " elapsed=" + ds.elapsed;
+            stepInfo += " hash=" + ds.getHash() + " elapsed=" + ds.getElapsed();
         } else if(step instanceof DumpStep) {
             DumpStep ds = (DumpStep) step;
-            stepInfo += " hash=" + ds.hash + " elapsed=" + ds.elapsed;
+            stepInfo += " hash=" + ds.getHash() + " elapsed=" + ds.getElapsed();
         } else if(step instanceof MethodSum) {
             MethodSum ms = (MethodSum) step;
-            stepInfo += " hash=" + ms.hash + " count=" + ms.count + " elapsed=" + ms.elapsed;
+            stepInfo += " hash=" + ms.getHash() + " count=" + ms.getCount() + " elapsed=" + ms.getElapsed();
         } else if(step instanceof SqlSum) {
             SqlSum ss = (SqlSum) step;
-            stepInfo += " hash=" + ss.hash + " count=" + ss.count + " elapsed=" + ss.elapsed;
+            stepInfo += " hash=" + ss.getHash() + " count=" + ss.getCount() + " elapsed=" + ss.getElapsed();
         } else if(step instanceof MessageSum) {
             MessageSum ms = (MessageSum) step;
-            stepInfo += " hash=" + ms.hash + " count=" + ms.count;
+            stepInfo += " hash=" + ms.getHash() + " count=" + ms.getCount();
         } else if(step instanceof ApiCallSum) {
             ApiCallSum acs = (ApiCallSum) step;
-            stepInfo += " hash=" + acs.hash + " count=" + acs.count + " elapsed=" + acs.elapsed;
+            stepInfo += " hash=" + acs.getHash() + " count=" + acs.getCount() + " elapsed=" + acs.getElapsed();
         } else if(step instanceof SocketSum) {
             SocketSum ss = (SocketSum) step;
-            stepInfo += " count=" + ss.count + " elapsed=" + ss.elapsed;
+            stepInfo += " count=" + ss.getCount() + " elapsed=" + ss.getElapsed();
         }
+
+        // Note: SpanStep and SpanCallStep are available in newer versions of Scouter
 
         println(stepInfo);
     }
