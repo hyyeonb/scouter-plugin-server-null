@@ -146,15 +146,14 @@ public class NullPlugin {
             stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed();
         } else if(step instanceof MessageStep) {
             MessageStep ms = (MessageStep) step;
-            String message = TextService.getHashMessage(ms.hash);
-            stepInfo += " hash=" + ms.hash + " message=" + message + " time=" + ms.time + " value=" + ms.value;
+            stepInfo += " " + ms.toString();
         } else if(step instanceof HashedMessageStep) {
             HashedMessageStep hms = (HashedMessageStep) step;
             String message = TextService.getHashMessage(hms.getHash());
             stepInfo += " hash=" + hms.getHash() + " message=" + message + " time=" + hms.getTime() + " value=" + hms.getValue();
         } else if(step instanceof ParameterizedMessageStep) {
             ParameterizedMessageStep pms = (ParameterizedMessageStep) step;
-            stepInfo += " hash=" + pms.getHash() + " time=" + pms.time;
+            stepInfo += " hash=" + pms.getHash() + " " + pms.toString();
         } else if(step instanceof ApiCallStep) {
             ApiCallStep acs = (ApiCallStep) step;
             String apiCall = TextService.getApiCallName(acs.getHash());
@@ -177,7 +176,7 @@ public class NullPlugin {
             stepInfo += " hash=" + ds.getHash() + " elapsed=" + ds.getElapsed();
         } else if(step instanceof DumpStep) {
             DumpStep ds = (DumpStep) step;
-            stepInfo += " hash=" + ds.hash + " elapsed=" + ds.elapsed;
+            stepInfo += " " + ds.toString();
         } else if(step instanceof MethodSum) {
             MethodSum ms = (MethodSum) step;
             stepInfo += " hash=" + ms.getHash() + " count=" + ms.getCount() + " elapsed=" + ms.getElapsed();
@@ -186,7 +185,7 @@ public class NullPlugin {
             stepInfo += " hash=" + ss.getHash() + " count=" + ss.getCount() + " elapsed=" + ss.getElapsed();
         } else if(step instanceof MessageSum) {
             MessageSum ms = (MessageSum) step;
-            stepInfo += " hash=" + ms.hash + " count=" + ms.getCount();
+            stepInfo += " " + ms.toString();
         } else if(step instanceof ApiCallSum) {
             ApiCallSum acs = (ApiCallSum) step;
             stepInfo += " hash=" + acs.getHash() + " count=" + acs.getCount() + " elapsed=" + acs.getElapsed();
