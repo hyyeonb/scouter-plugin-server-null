@@ -4,6 +4,7 @@ import scouter.lang.pack.*;
 import scouter.lang.plugin.PluginConstants;
 import scouter.lang.plugin.annotation.ServerPlugin;
 import scouter.lang.step.*;
+import scouter.plugin.server.none.util.TextService;
 import scouter.server.Configure;
 
 import java.util.List;
@@ -67,6 +68,8 @@ public class NullPlugin {
     @ServerPlugin(PluginConstants.PLUGIN_SERVER_TEXT)
     public void text(TextPack pack){
         if(conf.getBoolean("ext_plugin_null_text_enabled", true)) {
+            // TextPack을 TextService에 저장하여 hash -> text 매핑 관리
+            TextService.put(pack);
             println("[NullPlugin-text] " + pack);
             printPackDetails("TextPack", pack);
         }
@@ -175,34 +178,43 @@ public class NullPlugin {
         // Print specific details based on step type
         if(step instanceof MethodStep) {
             MethodStep ms = (MethodStep) step;
-            stepInfo += " hash=" + ms.hash + " elapsed=" + ms.elapsed + " cputime=" + ms.cputime;
+            String methodName = TextService.getMethodName(ms.hash);
+            stepInfo += " hash=" + ms.hash + " method=" + methodName + " elapsed=" + ms.elapsed + " cputime=" + ms.cputime;
         } else if(step instanceof MethodStep2) {
             MethodStep2 ms = (MethodStep2) step;
-            stepInfo += " hash=" + ms.hash + " elapsed=" + ms.elapsed;
+            String methodName = TextService.getMethodName(ms.hash);
+            stepInfo += " hash=" + ms.hash + " method=" + methodName + " elapsed=" + ms.elapsed;
         } else if(step instanceof SqlStep) {
             SqlStep ss = (SqlStep) step;
-            stepInfo += " hash=" + ss.hash + " elapsed=" + ss.elapsed + " error=" + ss.error;
+            String sql = TextService.getSql(ss.hash);
+            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed + " error=" + ss.error;
         } else if(step instanceof SqlStep2) {
             SqlStep2 ss = (SqlStep2) step;
-            stepInfo += " hash=" + ss.hash + " elapsed=" + ss.elapsed + " error=" + ss.error;
+            String sql = TextService.getSql(ss.hash);
+            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed + " error=" + ss.error;
         } else if(step instanceof SqlStep3) {
             SqlStep3 ss = (SqlStep3) step;
-            stepInfo += " hash=" + ss.hash + " elapsed=" + ss.elapsed;
+            String sql = TextService.getSql(ss.hash);
+            stepInfo += " hash=" + ss.hash + " sql=" + sql + " elapsed=" + ss.elapsed;
         } else if(step instanceof MessageStep) {
             MessageStep ms = (MessageStep) step;
-            stepInfo += " hash=" + ms.hash + " time=" + ms.time + " value=" + ms.value;
+            String message = TextService.getHashMessage(ms.hash);
+            stepInfo += " hash=" + ms.hash + " message=" + message + " time=" + ms.time + " value=" + ms.value;
         } else if(step instanceof HashedMessageStep) {
             HashedMessageStep hms = (HashedMessageStep) step;
-            stepInfo += " hash=" + hms.hash + " time=" + hms.time + " value=" + hms.value;
+            String message = TextService.getHashMessage(hms.hash);
+            stepInfo += " hash=" + hms.hash + " message=" + message + " time=" + hms.time + " value=" + hms.value;
         } else if(step instanceof ParameterizedMessageStep) {
             ParameterizedMessageStep pms = (ParameterizedMessageStep) step;
             stepInfo += " hash=" + pms.hash + " time=" + pms.time;
         } else if(step instanceof ApiCallStep) {
             ApiCallStep acs = (ApiCallStep) step;
-            stepInfo += " hash=" + acs.hash + " elapsed=" + acs.elapsed + " error=" + acs.error;
+            String apiCall = TextService.getApiCallName(acs.hash);
+            stepInfo += " hash=" + acs.hash + " api=" + apiCall + " elapsed=" + acs.elapsed + " error=" + acs.error;
         } else if(step instanceof ApiCallStep2) {
             ApiCallStep2 acs = (ApiCallStep2) step;
-            stepInfo += " hash=" + acs.hash + " elapsed=" + acs.elapsed;
+            String apiCall = TextService.getApiCallName(acs.hash);
+            stepInfo += " hash=" + acs.hash + " api=" + apiCall + " elapsed=" + acs.elapsed;
         } else if(step instanceof SocketStep) {
             SocketStep ss = (SocketStep) step;
             stepInfo += " ipaddr=" + ss.ipaddr + " port=" + ss.port + " elapsed=" + ss.elapsed;
