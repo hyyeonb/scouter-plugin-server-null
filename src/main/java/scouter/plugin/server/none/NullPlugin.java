@@ -128,22 +128,10 @@ public class NullPlugin {
             MethodStep ms = (MethodStep) step;
             String methodName = TextService.getMethodName(ms.getHash());
             stepInfo += " hash=" + ms.getHash() + " method=" + methodName + " elapsed=" + ms.getElapsed() + " cputime=" + ms.getCputime();
-        } else if(step instanceof MethodStep2) {
-            MethodStep2 ms = (MethodStep2) step;
-            String methodName = TextService.getMethodName(ms.getHash());
-            stepInfo += " hash=" + ms.getHash() + " method=" + methodName + " elapsed=" + ms.getElapsed();
         } else if(step instanceof SqlStep) {
             SqlStep ss = (SqlStep) step;
             String sql = TextService.getSql(ss.getHash());
             stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed() + " error=" + ss.getError();
-        } else if(step instanceof SqlStep2) {
-            SqlStep2 ss = (SqlStep2) step;
-            String sql = TextService.getSql(ss.getHash());
-            stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed() + " error=" + ss.getError();
-        } else if(step instanceof SqlStep3) {
-            SqlStep3 ss = (SqlStep3) step;
-            String sql = TextService.getSql(ss.getHash());
-            stepInfo += " hash=" + ss.getHash() + " sql=" + sql + " elapsed=" + ss.getElapsed();
         } else if(step instanceof MessageStep) {
             MessageStep ms = (MessageStep) step;
             stepInfo += " " + ms.toString();
@@ -158,10 +146,6 @@ public class NullPlugin {
             ApiCallStep acs = (ApiCallStep) step;
             String apiCall = TextService.getApiCallName(acs.getHash());
             stepInfo += " hash=" + acs.getHash() + " api=" + apiCall + " elapsed=" + acs.getElapsed() + " error=" + acs.getError();
-        } else if(step instanceof ApiCallStep2) {
-            ApiCallStep2 acs = (ApiCallStep2) step;
-            String apiCall = TextService.getApiCallName(acs.getHash());
-            stepInfo += " hash=" + acs.getHash() + " api=" + apiCall + " elapsed=" + acs.getElapsed();
         } else if(step instanceof SocketStep) {
             SocketStep ss = (SocketStep) step;
             stepInfo += " ipaddr=" + ss.getIpaddr() + " port=" + ss.getPort() + " elapsed=" + ss.getElapsed();
